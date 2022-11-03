@@ -1,0 +1,169 @@
+:root {
+    --background-color: #2a2929;
+    --primary-font-color: rgba(145,150,170,1);
+    --secondary-font-color: rgba(50,60,90,1);
+    --soft: rgba(255,255,255,.23);
+    --dark: rgba(86, 86, 86, 0.5);
+    --shadow: rgba(11, 11, 14, 0.32);
+}
+
+
+
+[data-theme="dark"] {
+    --background-color: #151520;
+    --primary-font-color: #c7c7c7;
+    --secondary-font-color: rgba(50,60,90,1);
+    --soft: rgba(255,255,255,.23);
+    --dark: rgba(86, 86, 86, 0.5);
+    --shadow: rgba(11, 11, 14, 0.32)
+}
+
+*::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    box-sizing: border-box;
+    justify-content: center;
+    margin: 2rem;
+    background-color: rgba(11, 11, 14, 0.32)
+}
+
+.heading {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding: 2rem;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.calculator {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.button-grid {
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(4, 6rem);
+    grid-template-rows: minmax(7rem, auto) repeat(5, 6rem);
+}
+
+.button-grid > button {
+    cursor: pointer;
+    font-size: 1rem;
+    padding: .5rem;
+    margin: .5rem;
+    background: var(--background-color);
+    box-shadow: var(--shadow-impl);
+    color: var(--primary-font-color);
+}
+
+.display {
+    grid-column: 1 /-1;
+    background-color: rgba(0, 0, 0, .75);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: .75rem;
+    word-wrap: break-word;
+    word-break: break-all;
+    border-radius: 20px 20px 0px 0px;
+    height: 120px;
+    width: 400px;
+
+}
+
+.display .previous-operand {
+    color: rgba(255, 255, 255, .75);
+    font-size: 1.5rem;
+}
+
+.display .current-operand {
+    color: white;
+    font-size: 2.5rem;
+}
+
+
+.tape {
+    border-radius: 20px;
+    border: 1px solid #BABABA;
+    height: 600px;
+    width: 500px;
+    margin: 50px;
+    background: #1E1E1E;
+}
+
+
+/* Style for theme toggle */
+.toggle {
+    padding-top: 1.2rem;
+}
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #1d1b1b;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #1d1b1b;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}

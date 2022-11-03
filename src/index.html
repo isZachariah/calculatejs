@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Calculator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="calculator-js">
+    <div class="heading">
+        <h1>Calculator</h1>
+
+        <div class="toggle">
+            <label class="switch">
+                <input type="checkbox"/>
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+    <div id="container" class="container">
+        <div class="calculator">
+            <div class="display">
+                <h3 class="previous-operand" id="previous">0</h3>
+                <h2 class="current-operand" id="current">0</h2>
+            </div>
+            <div class="button-grid">
+
+                <button class="parens" id="(">(</button>
+                <button class="operator" id="-/+">-/+</button>
+                <button class="operator" id="%">%</button>
+                <button class="clear" id="clear">AC</button>
+
+                <button class="digit" id="1">1</button>
+                <button class="digit" id="2">2</button>
+                <button class="digit" id="3">3</button>
+                <button class="operator" id="/">÷</button>
+
+                <button class="digit" id="4">4</button>
+                <button class="digit" id="5">5</button>
+                <button class="digit" id="6">6</button>
+                <button class="operator" id="*">'*'</button>
+
+                <button class="digit" id="7">7</button>
+                <button class="digit" id="8">8</button>
+                <button class="digit" id="9">9</button>
+                <button class="operator" id="-">-</button>
+
+                <button class="digit" id=".">.</button>
+                <button class="digit" id="0">0</button>
+                <button class="equals" id="=">=</button>
+                <button class="operator" id="+">+</button>
+            </div>
+        </div>
+        <div class="tape"></div>
+    </div>
+</div>
+
+<script src="index.js" type="module"></script>
+</body>
+</html>
