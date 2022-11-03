@@ -22,14 +22,18 @@
     <div id="container" class="container">
         <div class="calculator">
             <div class="display">
-                <h3 class="previous-operand" id="previous">0</h3>
+                <div class="prev">
+                    <h3 class="previous-operand" id="previous">0</h3>
+                    <h3 class="operation"></h3>
+                </div>
                 <h2 class="current-operand" id="current">0</h2>
             </div>
             <div class="button-grid">
 
-                <button class="parens" id="(">(</button>
-                <button class="operator" id="-/+">-/+</button>
-                <button class="operator" id="%">%</button>
+
+                <button class="sign" id="-/+">-/+</button>
+                <button class="percent" id="%">%</button>
+                <button class="delete" id="del">Delete</button>
                 <button class="clear" id="clear">AC</button>
 
                 <button class="digit" id="1">1</button>
@@ -40,7 +44,7 @@
                 <button class="digit" id="4">4</button>
                 <button class="digit" id="5">5</button>
                 <button class="digit" id="6">6</button>
-                <button class="operator" id="*">'*'</button>
+                <button class="operator" id="*">*</button>
 
                 <button class="digit" id="7">7</button>
                 <button class="digit" id="8">8</button>
