@@ -1,7 +1,9 @@
 # Project Three: Calculator
-So far I've got a general outline. The styles are not so good at this point and will get a lot of my attention and the functionality isn't there yet, but I was pretty excited to implement my own version of useState and useReducer.
+I made this with react and am now trying to reimplement it w/o using react. It is going pretty well so far but that is why it's not nearly as finished as I'd like it to be.
 
+So far I've got a general outline. The styles are not so good at this point and will get a lot of my attention next and the functionality isn't there yet, but I was pretty excited to implement my own version of useState and useReducer.
 
+Main JS file is the index.js file, calc.js is the previous project that I haven't implemented any part of yet. Extensions contains useState and useReducer and jsx_runtime has functions for parsing JSX and creating elements.
 
 # Requirements #
 Using much of what you built-in Project 1, create a single page client side calculator application.
