@@ -90,6 +90,11 @@ body {
     font-size: 1.5rem;
 }
 
+.display .operation {
+    color: rgba(255, 255, 255, .75);
+    font-size: 1.5rem;
+}
+
 .display .current-operand {
     color: white;
     font-size: 2.5rem;

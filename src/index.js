@@ -20,8 +20,6 @@ function formatOperand(operand) {
     return `${INTEGER_FORMATTER.format(integer)}.${decimal}`;
 }
 
-// document.querySelector('#current').textContent
-
 const ACTIONS = {
     add_digit:          'add-digit',
     delete_digit:       'delete-digit',
@@ -37,28 +35,27 @@ const reducer = (state, {type, payload}) => {
             if (state.overwrite) {
                 return {
                     ...state,
-                    current_operand: payload.digit,
+                    current_operand: updateDisplay(payload.digit),
                     overwrite: false,
                 };
             }
             if (payload.digit === "0" && state.current_operand === "0") return state;
-            if (payload.digit === "." && state.current_operand.includes("."))
-                return state;
+            if (payload.digit === "." && state.current_operand.includes(".")) return state;
             return {
                 ...state,
-                current_operand: updateDisplay(`${state.current_operand || ''}${payload.digit}`)
+                current_operand: updateDisplay(`${state.current_operand || ''}${payload.digit}`),
             }
         case ACTIONS.delete_digit:
             if (state.overwrite) {
                 return {
                     ...state,
                     overwrite: false,
-                    current_operand: updateDisplay(''),
+                    current_operand: updateDisplay(null),
                 };
             }
             if (state.current_operand == null) return state;
             if (state.current_operand.length === 1) {
-                return { ...state, current_operand: updateDisplay('') };
+                return { ...state, current_operand: updateDisplay(null) };
             }
             return {
                 ...state,
@@ -74,28 +71,27 @@ const reducer = (state, {type, payload}) => {
             if (state.current_operand == null && state.previous_operand == null) {
                 return state;
             }
-
             if (state.current_operand == null) {
                 return {
                     ...state,
-                    operation: updateOperation(payload.operation),
+                    operation: updateOperation(payload.operator),
                 };
             }
-
             if (state.previous_operand == null) {
                 return {
                     ...state,
-                    operation: updateOperation(payload.operation),
+                    operation: updateOperation(payload.operator),
                     previous_operand: updatePrevDisplay(state.current_operand),
-                    current_operand: updateDisplay(''),
+                    current_operand: updateDisplay(null),
                 };
             }
-
+            console.log(state.current_operand, state.previous_operand, payload.operator)
+            console.log(evaluate(state.current_operand, state.previous_operand, payload.operator))
             return {
                 ...state,
-                previous_operand: updatePrevDisplay(evaluate(state)),
-                operation: updateOperation(payload.operation),
-                current_operand: updateDisplay(''),
+                previous_operand: updatePrevDisplay(formatOperand(evaluate(state.current_operand, state.previous_operand, payload.operator))),
+                operation: updateOperation(payload.operator),
+                current_operand: updateDisplay(null),
             };
 
         case ACTIONS.evaluate:
@@ -104,8 +100,27 @@ const reducer = (state, {type, payload}) => {
     }
 }
 
-const evaluate = ({}) => {
-
+function evaluate(current_operand, previous_operand, operation) {
+    const prev = parseFloat(previous_operand);
+    const current = parseFloat(current_operand);
+    if (isNaN(prev) || isNaN(current)) return "";
+    let computation = "";
+    switch (operation) {
+        case "+":
+            computation = prev + current;
+            break;
+        case "-":
+            computation = prev - current;
+            break;
+        case "*":
+            computation = prev * current;
+            break;
+        case "÷":
+            computation = prev / current;
+            break;
+        default: return
+    }
+    return computation.toString();
 }
 
 const initialState = {
@@ -115,7 +130,9 @@ const initialState = {
     history: '',
 }
 
-const [{current_operand, previous_operand, history}, dispatch] = useReducer(reducer, initialState)
+const [{current_operand, previous_operand, operation, history}, dispatch] = useReducer(reducer, initialState)
+
+
 
 /** Digit event listeners **/
 const digits = document.querySelectorAll('.digit')
@@ -142,8 +159,9 @@ document.querySelector('.delete')
     })
 
 /** Operator event listeners **/
-document.querySelector('.operator')
-    .addEventListener('click', (e) => {
+const operators = document.querySelectorAll('.operator')
+operators.forEach((op) => {
+    op.addEventListener('click', (e) => {
         dispatch({
             type: ACTIONS.choose_operation,
             payload: {
@@ -151,6 +169,7 @@ document.querySelector('.operator')
             }
         })
     })
+})
 
 /** Sign - Negation event listener **/
 
@@ -166,13 +185,24 @@ document.querySelector('.operator')
  * @return text content of current display
  * **/
 const updateDisplay = (updated_operand) => {
-    return document.querySelector('#current').textContent = updated_operand
+    document.querySelector('#current').innerText = updated_operand
+    return updated_operand
 }
 
 const updatePrevDisplay = (updated_previous) => {
-    return document.querySelector('#previous').textContent = updated_previous
+    document.querySelector('#previous').innerText = updated_previous
+    return updated_previous
 }
 
 const updateOperation = (updated_operator) => {
-    return document.querySelector('.operation').textContent = updated_operator
+    document.querySelector('.operation').innerText = updated_operator
+    return updated_operator
 }
+
+// const updateEntireDisplay = (operand, previous, operator) => {
+//     updateDisplay(operand)
+//     updatePrevDisplay(previous)
+//     updateOperation(operator)
+// }
+
+// updateEntireDisplay(current_operand, previous_operand, operation)
