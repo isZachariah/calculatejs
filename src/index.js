@@ -7,7 +7,12 @@
  *
  **/
 
-import { useState, useReducer } from "./Extensions.js";
+// finish reducer and move the display updates into the App() function after each event handler
+// finish event handlers
+// figure out how to make parse and evaluate/ resolve() work properly
+
+import {useReducer} from "./Extensions.js";
+import {evaluate, parse} from "./calc.js";
 
 const INTEGER_FORMATTER = new Intl.NumberFormat("en-us", {
     maximumFractionDigits: 0,
@@ -22,162 +27,122 @@ function formatOperand(operand) {
 
 const ACTIONS = {
     add_digit:          'add-digit',
-    delete_digit:       'delete-digit',
+    delete_character:   'delete-character',
+    add_operator:       'add-operator',
     clear_display:      'clear-display',
     update_history:     'update-history',
-    choose_operation:   'choose-operation',
     evaluate:           'evaluate',
 }
 
 const reducer = (state, {type, payload}) => {
     switch (type) {
         case ACTIONS.add_digit:
-            if (state.overwrite) {
-                return {
-                    ...state,
-                    current_operand: updateDisplay(payload.digit),
-                    overwrite: false,
-                };
-            }
-            if (payload.digit === "0" && state.current_operand === "0") return state;
-            if (payload.digit === "." && state.current_operand.includes(".")) return state;
+            if (payload.digit === "0" && state.current_operation === "0") return state;
+            if (payload.digit === "." && state.current_operation.includes(".")) return state;
             return {
                 ...state,
-                current_operand: updateDisplay(`${state.current_operand || ''}${payload.digit}`),
+                current_operation: `${state.current_operation || ''}${payload.digit}`,
             }
-        case ACTIONS.delete_digit:
-            if (state.overwrite) {
-                return {
-                    ...state,
-                    overwrite: false,
-                    current_operand: updateDisplay(null),
-                };
-            }
-            if (state.current_operand == null) return state;
-            if (state.current_operand.length === 1) {
-                return { ...state, current_operand: updateDisplay(null) };
+        case ACTIONS.delete_character:
+            if (state.current_operation === '') return state;
+            if (state.current_operation.length === 1) {
+                return { ...state, current_operation: updateDisplay('') };
             }
             return {
                 ...state,
-                current_operand: updateDisplay(state.current_operand.slice(0, -1)),
-            };
+                current_operation: state.current_operation.slice(0, -1),
+            }
+        case ACTIONS.add_operator:
+            if (state.current_operation === '') return state
+            return {
+                ...state,
+                operator: payload.operator,
+                current_operation: `${state.current_operation || ''} ${payload.operator}`,
+                display: updateDisplay(`${payload.operator}`),
+                history: updateHistory(state.current_operation)
+            }
         case ACTIONS.clear_display:
-
             return {}
         case ACTIONS.update_history:
-
             return {}
-        case ACTIONS.choose_operation:
-            if (state.current_operand == null && state.previous_operand == null) {
-                return state;
-            }
-            if (state.current_operand == null) {
-                return {
-                    ...state,
-                    operation: updateOperation(payload.operator),
-                };
-            }
-            if (state.previous_operand == null) {
-                return {
-                    ...state,
-                    operation: updateOperation(payload.operator),
-                    previous_operand: updatePrevDisplay(state.current_operand),
-                    current_operand: updateDisplay(null),
-                };
-            }
-            console.log(state.current_operand, state.previous_operand, payload.operator)
-            console.log(evaluate(state.current_operand, state.previous_operand, payload.operator))
-            return {
-                ...state,
-                previous_operand: updatePrevDisplay(formatOperand(evaluate(state.current_operand, state.previous_operand, payload.operator))),
-                operation: updateOperation(payload.operator),
-                current_operand: updateDisplay(null),
-            };
-
         case ACTIONS.evaluate:
+            let solution = resolve(state.current_operation.split(''))
+            return {
+                current_operation: updateDisplay(solution.toString())
 
-            return {}
+            }
     }
 }
 
-function evaluate(current_operand, previous_operand, operation) {
-    const prev = parseFloat(previous_operand);
-    const current = parseFloat(current_operand);
-    if (isNaN(prev) || isNaN(current)) return "";
-    let computation = "";
-    switch (operation) {
-        case "+":
-            computation = prev + current;
-            break;
-        case "-":
-            computation = prev - current;
-            break;
-        case "*":
-            computation = prev * current;
-            break;
-        case "÷":
-            computation = prev / current;
-            break;
-        default: return
-    }
-    return computation.toString();
+function resolve(expression) {
+    let tokens = parse(expression);
+    return evaluate(tokens)
 }
 
 const initialState = {
-    current_operand: '',
-    previous_operand: '',
-    operation: '',
+    current_operation: '',
+    display: '',
     history: '',
 }
 
-const [{current_operand, previous_operand, operation, history}, dispatch] = useReducer(reducer, initialState)
+const App = () => {
+    const [getState, dispatch] = useReducer(reducer, initialState)
 
-
-
-/** Digit event listeners **/
-const digits = document.querySelectorAll('.digit')
-digits.forEach((digit, index, arr) => {
-    digit.addEventListener('click', (e) => {
-        dispatch({
-            type: ACTIONS.add_digit,
-            payload: {
-                digit: e.target.id
-            }
-        })
-    })
-})
-
-/** All Clear event listener **/
-
-
-/** Delete event listener **/
-document.querySelector('.delete')
-    .addEventListener('click', () => {
-        dispatch({
-            type: ACTIONS.delete_digit
+    /** Digit event listeners **/
+    const digits = document.querySelectorAll('.digit')
+    digits.forEach((digit, index, arr) => {
+        digit.addEventListener('click', (e) => {
+            dispatch({
+                type: ACTIONS.add_digit,
+                payload: {
+                    digit: e.target.id
+                }
+            })
+            updateDisplay(getState().current_operation)
         })
     })
 
-/** Operator event listeners **/
-const operators = document.querySelectorAll('.operator')
-operators.forEach((op) => {
-    op.addEventListener('click', (e) => {
-        dispatch({
-            type: ACTIONS.choose_operation,
-            payload: {
-                operator: e.target.id
-            }
+    /** All Clear event listener **/
+
+
+    /** Delete event listener **/
+    document.querySelector('.delete')
+        .addEventListener('click', () => {
+            dispatch({
+                type: ACTIONS.delete_character
+            })
+        })
+
+    /** Operator event listeners **/
+    const operators = document.querySelectorAll('.operator')
+    operators.forEach((op) => {
+        op.addEventListener('click', (e) => {
+            dispatch({
+                type: ACTIONS.add_operator,
+                payload: {
+                    operator: e.target.id
+                }
+            })
         })
     })
-})
 
-/** Sign - Negation event listener **/
-
-
-/** Percent event listener **/
+    /** Sign - Negation event listener **/
 
 
-/** Equal event listener **/
+    /** Percent event listener **/
+
+
+    /** Equal event listener **/
+    document.querySelector('.equals')
+        .addEventListener('click', () => {
+            dispatch({
+                type: ACTIONS.evaluate
+            })
+        })
+
+}
+
+
 
 
 /** updateDisplay
@@ -189,9 +154,17 @@ const updateDisplay = (updated_operand) => {
     return updated_operand
 }
 
-const updatePrevDisplay = (updated_previous) => {
-    document.querySelector('#previous').innerText = updated_previous
-    return updated_previous
+const updateHistory = (updated_history) => {
+    document.querySelector('#history').appendChild(generateHistory(updated_history))
+    return updated_history
+}
+
+function generateHistory(content) {
+    const newElement = document.createElement('p');
+    newElement.classList.add('history');
+    newElement.innerText = content;
+    // newElement.style.display = 'block'
+    return newElement;
 }
 
 const updateOperation = (updated_operator) => {
@@ -199,9 +172,11 @@ const updateOperation = (updated_operator) => {
     return updated_operator
 }
 
+App()
+
 // const updateEntireDisplay = (operand, previous, operator) => {
 //     updateDisplay(operand)
-//     updatePrevDisplay(previous)
+//     updateHistory(previous)
 //     updateOperation(operator)
 // }
 

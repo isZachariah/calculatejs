@@ -110,6 +110,11 @@ body {
     background: #1E1E1E;
 }
 
+.history {
+    color: rgba(255, 255, 255, .75);
+    font-size: 1rem;
+    padding: 1rem;
+}
 
 /* Style for theme toggle */
 .toggle {

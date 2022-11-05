@@ -25,8 +25,8 @@
 **/
 
 /** imports and requirements **/
-let prompt = require('prompt-sync')();
-const fs = require('fs');
+// let prompt = require('prompt-sync')();
+// const fs = require('fs');
 
 /** objects - constants **/
 const constants = {
@@ -311,11 +311,11 @@ function save(expression) {
     let tokens = parse(expression);
     let result = evaluate(expression);
     let print = `Expression: ${expression}\nSolution: ${result}\n\n`;
-    fs.writeFile('./calculations.txt', print, { flag: 'a+' }, err => {
-        if (err) {
-            console.log(err);
-        }
-    });
+    // fs.writeFile('./calculations.txt', print, { flag: 'a+' }, err => {
+    //     if (err) {
+    //         console.log(err);
+    //     }
+    // });
 }
 
 /** Console menu interaction functions **/
@@ -328,7 +328,7 @@ const program = () => {
     while (run) {
         let input = '';
         while (input !== '=') {
-            input = prompt(`Enter a token or expression: `)
+            // input = prompt(`Enter a token or expression: `)
             switch (input) {
                 case 'help'     : console.log(help); break;
                 case 'how'      : console.log(how_it_works); break;
@@ -432,6 +432,6 @@ const thanks = `
 Thanks for using calcjs. Have a great day!
 `
 
-program();
+// program();
 
 export { parse, evaluate }

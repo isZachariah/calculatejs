@@ -21,4 +21,12 @@ function useReducer(reducer, initialState = {}) {
     return [store.getState, store.dispatch]
 }
 
-export { useState, useReducer }
+function generateElement(element, id, classes, content) {
+    const newElement = document.createElement(element);
+    newElement.id = id;
+    newElement.classList.add(...classes);
+    newElement.innerHTML = content;
+    return newElement;
+}
+
+export { useState, useReducer, generateElement }
